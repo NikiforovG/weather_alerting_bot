@@ -31,4 +31,3 @@ jobs:
     - name: Lint with mypy
       run: |
         mypy app --strict --namespace-packages --explicit-package-bases
-      continue-on-error: true
