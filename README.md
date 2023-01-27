@@ -1,1 +1,1 @@
-# weather_alerting_bot
+# WeatherAlertingBot
