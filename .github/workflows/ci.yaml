@@ -1,8 +1,12 @@
 name: Python linting
 
 on: [push]
+
 jobs:
   linting:
+
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
