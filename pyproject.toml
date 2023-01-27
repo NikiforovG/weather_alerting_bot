@@ -1,0 +1,44 @@
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".ruff_cache",
+]
+# Same as Black.
+line-length = 120
+# Assume Python 3.10.
+target-version = "py310"
+
+[tool.black]
+skip-string-normalization = true
+line_length = 120
+
+[tool.poetry]
+name = "weather_alerting_bot"
+version = "0.1.0"
+description = ""
+authors = ["Gleb Nikiforov <nikiforovg1996@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.28.2"
+
+[tool.poetry.dev-dependencies]
+bandit = "^1.7.4"
+black = "^22.3.0"
+flake8 = "^4.0.1"
+flake8-bandit = "^3.0.0"
+flake8-black = "^0.3.2"
+flake8-bugbear = "^22.3.23"
+flake8-import-order = "^0.18.1"
+flake8-polyfill = "^1.0.2"
+mypy = "^0.942"
+mypy-extensions = "^0.4.3"
+pylint = "~2.13.7"
+pre-commit = "^2.18.1"
+ruff = "^0.0.236"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
