@@ -1,5 +1,6 @@
 [tool.ruff]
 select = ["E", "F", "B", "N", "S", "ICN"]
+ignore = ["N802"]
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".git",

@@ -1,5 +1,6 @@
 import logging
 import sys
+from logging.handlers import TimedRotatingFileHandler
 
 from pythonjsonlogger import jsonlogger
 
@@ -33,16 +34,22 @@ def _get_formatter() -> _StackDriverJsonFormatter:
     return formatter
 
 
-def _get_info_handler() -> logging.StreamHandler:  # type: ignore
-    info_handler = logging.StreamHandler(sys.stdout)
+def _get_info_handler(file: bool = False) -> logging.StreamHandler | TimedRotatingFileHandler:  # type:ignore
+    if file:
+        info_handler = TimedRotatingFileHandler('logs/app.log', when='midnight', backupCount=7)
+    else:
+        info_handler = logging.StreamHandler(sys.stdout)  # type:ignore
     info_handler.setLevel(logging.INFO)
     info_handler.addFilter(_MaxLevelFilter(logging.WARNING))
     info_handler.setFormatter(_get_formatter())
     return info_handler
 
 
-def _get_error_handler() -> logging.StreamHandler:  # type: ignore
-    error_handler = logging.StreamHandler(sys.stderr)
+def _get_error_handler(file: bool = False) -> logging.StreamHandler | TimedRotatingFileHandler:  # type:ignore
+    if file:
+        error_handler = TimedRotatingFileHandler('./logs/app.log', when='midnight', backupCount=7)
+    else:
+        error_handler = logging.StreamHandler(sys.stdout)  # type:ignore
     error_handler.setLevel(logging.ERROR)
     error_handler.setFormatter(_get_formatter())
     return error_handler
@@ -57,7 +64,9 @@ def getLogger(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
     logger.addHandler(_get_info_handler())
+    logger.addHandler(_get_info_handler(file=True))
     logger.addHandler(_get_error_handler())
+    logger.addHandler(_get_error_handler(file=True))
     logger.propagate = False
     _loggers[name] = logger
     return logger
