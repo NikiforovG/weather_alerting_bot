@@ -13,7 +13,7 @@ log = getLogger(__name__)
 
 
 def request_with_retries(
-    url: str, params: dict[str, Any], request_timeout: int = 2, max_tries: int = 5
+    url: str, params: dict[str, Any] | None = None, request_timeout: int = 2, max_tries: int = 5
 ) -> requests.Response:
     retry_strategy = Retry(
         total=max_tries,
