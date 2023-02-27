@@ -3,6 +3,7 @@ from typing import Any
 
 import pytz
 from requests.exceptions import JSONDecodeError
+from telegram.ext import ContextTypes
 
 from src import getLogger
 from src.commons import request_with_retries
@@ -41,15 +42,15 @@ WMO_CODES = {
 }
 
 
-def get_weather(date: str) -> dict[str, Any]:
+def get_weather(date: datetime) -> dict[str, Any]:
     url = (
         "https://api.open-meteo.com/v1/forecast?"
         "latitude=52.37"
         "&longitude=4.84"
         "&hourly=temperature_2m,precipitation_probability,precipitation,windspeed_10m,weathercode"
         "&timezone=CET"
-        f"&start_date={date}"
-        f"&end_date={date}"
+        f"&start_date={date.strftime('%Y-%m-%d')}"
+        f"&end_date={(date + timedelta(days=1)).strftime('%Y-%m-%d')}"
     )
     resp = request_with_retries(url)
     try:
@@ -80,15 +81,11 @@ def message_for_current_weather(weather: dict[str, Any]) -> str:
     return message
 
 
-def report_weather() -> str:
-    date = datetime.now().strftime("%Y-%m-%d")
-    weather_dict = get_weather(date)
+async def report_weather(chat_id: str, context: ContextTypes.DEFAULT_TYPE) -> None:
+    weather_dict = get_weather(datetime.now())
     if len(weather_dict.keys()) == 0:
         message = "Sorry we could not get weather for you"
     else:
         message = message_for_current_weather(weather_dict)
-    return message
-
-
-if __name__ == '__main__':
-    print(report_weather())
+    await context.bot.send_message(chat_id=chat_id, text=message)
+    log.info("id %s: weather update sent", chat_id)
