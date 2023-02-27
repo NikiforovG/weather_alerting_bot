@@ -10,7 +10,6 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler('start', handlers.start))
     application.add_handler(CommandHandler('help', handlers.hlp))
     application.add_handler(CommandHandler('source', handlers.source_url))
-    application.add_handler(CommandHandler('weather', handlers.weather))
     application.add_handler(CommandHandler('set', handlers.set_alerts))
     application.add_handler(CommandHandler('check', handlers.check_alerts))
     application.add_handler(CommandHandler('cancel', handlers.cancel_alerts))

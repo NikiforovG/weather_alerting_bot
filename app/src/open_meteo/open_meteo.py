@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Any
 
+import pytz
 from requests.exceptions import JSONDecodeError
 
 from src import getLogger
@@ -60,7 +61,8 @@ def get_weather(date: str) -> dict[str, Any]:
 
 
 def message_for_current_weather(weather: dict[str, Any]) -> str:
-    now = datetime.now()
+    timezone = pytz.timezone(weather["timezone"])
+    now = datetime.now(timezone)
     if now.minute > 30:
         now += timedelta(hours=1)
     now_str = now.strftime("%Y-%m-%dT%H:00")
@@ -86,3 +88,7 @@ def report_weather() -> str:
     else:
         message = message_for_current_weather(weather_dict)
     return message
+
+
+if __name__ == '__main__':
+    print(report_weather())
