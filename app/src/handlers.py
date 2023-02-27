@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from src import getLogger
-from src.commons import get_tomorrow_9am_cet
+from src.commons import get_next_9am_cet
 from src.open_meteo import report_weather
 
 log = getLogger(__name__)
@@ -61,7 +61,7 @@ async def alert_weather(context: ContextTypes.DEFAULT_TYPE) -> None:
         log.critical("chat_id is None")
         raise ValueError("chat_id must be not None")
     await report_weather(chat_id, context)
-    due = get_tomorrow_9am_cet()
+    due = get_next_9am_cet()
     context.job_queue.run_once(alert_weather, when=due, chat_id=chat_id, name=str(chat_id))  # type: ignore
     log.info("id %s: new alert scheduled", chat_id)
 
@@ -82,15 +82,14 @@ async def set_alerts(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     chat_id = update.effective_message.chat_id  # type: ignore
 
     job_removed = remove_job_if_exists(str(chat_id), context)
-    due = get_tomorrow_9am_cet()
+    due = get_next_9am_cet()
     context.chat_data['chat_id'] = chat_id  # type: ignore
     context.job_queue.run_once(alert_weather, when=due, chat_id=chat_id, name=str(chat_id))  # type: ignore
 
     current_jobs = context.job_queue.get_jobs_by_name(str(chat_id))  # type: ignore
-    text = (
-        "Alerting successfully set!" " And old one was removed.\n"
-        if job_removed
-        else "\n"
+    text = "Alerting was successfully set!"
+    text += " And old one was removed.\n" if job_removed else "\n"
+    text += (
         "Next message at"
         f" {current_jobs[0].next_t.strftime('%Y-%m-%d %H:%M')} {current_jobs[0].next_t.tzinfo}"  # type: ignore
     )

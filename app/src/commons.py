@@ -36,13 +36,12 @@ def request_with_retries(
     return resp
 
 
-def get_tomorrow_9am_cet() -> datetime:
+def get_next_9am_cet() -> datetime:
     """
-    Returns a datetime object representing 9am Central European Time (CET) tomorrow.
+    Returns a datetime object representing next 9am Central European Time (CET).
     """
-    now = datetime.now()
-    cet_tz = pytz.timezone('CET')
-    tomorrow = now.date() + timedelta(days=1)
-    # Create a datetime object representing 9am CET tomorrow
-    tomorrow_9am: datetime = cet_tz.localize(datetime.combine(tomorrow, datetime.min.time()).replace(hour=9))
-    return tomorrow_9am
+    now = datetime.now(pytz.timezone('CET'))
+    today_9am = now.replace(hour=9, minute=0, second=0, microsecond=0)
+    if now < today_9am:
+        return today_9am
+    return (now + timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
