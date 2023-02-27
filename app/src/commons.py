@@ -24,8 +24,8 @@ def request_with_retries(
     adapter = HTTPAdapter(max_retries=retry_strategy)
 
     with requests.Session() as session:
-        session.mount("https://", adapter)  # type:ignore
-        session.mount("http://", adapter)  # type:ignore
+        session.mount("https://", adapter)
+        session.mount("http://", adapter)
         resp = requests.get(url, params, timeout=request_timeout)
 
     try:

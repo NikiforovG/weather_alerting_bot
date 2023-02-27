@@ -8,16 +8,16 @@ _message_format = "%(asctime)s %(levelname)s %(name)s %(message)s"
 _date_format = '%I:%M:%S'
 
 
-class _StackDriverJsonFormatter(jsonlogger.JsonFormatter):  # type: ignore
-    def __init__(  # type: ignore
-        self, *args, fmt: str = _message_format, style: str = '%', datefmt: str = _date_format, **kwargs
+class _StackDriverJsonFormatter(jsonlogger.JsonFormatter):
+    def __init__(
+        self, *args: str, fmt: str = _message_format, style: str = '%', datefmt: str = _date_format, **kwargs: str
     ) -> None:
-        jsonlogger.JsonFormatter.__init__(self, *args, fmt=fmt, style=style, datefmt=datefmt, **kwargs)
+        jsonlogger.JsonFormatter.__init__(self, *args, fmt=fmt, style=style, datefmt=datefmt, **kwargs)  # type: ignore
 
     def process_log_record(self, log_record):  # type: ignore
         log_record['severity'] = log_record['levelname']
         del log_record['levelname']
-        return super().process_log_record(log_record)
+        return super().process_log_record(log_record)  # type: ignore
 
 
 class _MaxLevelFilter(logging.Filter):

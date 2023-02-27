@@ -37,14 +37,14 @@ async def source_url(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await context.bot.send_message(
-        chat_id=update.effective_chat.id, text=f"Sorry '{update.message.text}' is not a valid command"  # type: ignore
+        chat_id=update.effective_chat.id, text=f"Sorry {update.message.text!r} is not a valid command"  # type: ignore
     )
 
 
 async def unknown_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await context.bot.send_message(
         chat_id=update.effective_chat.id,  # type: ignore
-        text=f"Sorry I can't recognize you, you said '{update.message.text}'",  # type: ignore
+        text=f"Sorry I can't recognize you, you said {update.message.text!r}",  # type: ignore
     )
 
 
@@ -103,7 +103,7 @@ async def check_alerts(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     chat_id = update.effective_message.chat_id  # type: ignore
     current_jobs = context.job_queue.get_jobs_by_name(str(chat_id))  # type: ignore
 
-    if alerting_set := (len(current_jobs) > 0):
+    if alerting_set := len(current_jobs) > 0:
         text = (
             "You are subscribed for weather alerting. Next message at"
             f" {current_jobs[0].next_t.strftime('%Y-%m-%d %H:%M')} {current_jobs[0].next_t.tzinfo}"  # type: ignore
@@ -119,7 +119,7 @@ async def cancel_alerts(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     chat_id = update.effective_message.chat_id  # type: ignore
     current_jobs = context.job_queue.get_jobs_by_name(str(chat_id))  # type: ignore
 
-    if alerting_set := (len(current_jobs) > 0):
+    if alerting_set := len(current_jobs) > 0:
         text = "Your weather alerting is cancelled."
         remove_job_if_exists(str(chat_id), context)
     else:
